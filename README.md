@@ -1,5 +1,5 @@
-tonnerre
-========
+tonnerre-java
+=============
 
 Tonnerre provides simple messaging between applications. By default, the
 messages are transferred using TCP/IP sockets. As such, the sender and
