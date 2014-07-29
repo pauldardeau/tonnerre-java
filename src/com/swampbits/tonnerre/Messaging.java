@@ -11,6 +11,7 @@ import java.util.HashMap;
 
 import com.swampbits.chaudiere.IniReader;
 import com.swampbits.chaudiere.KeyValuePairs;
+import com.swampbits.chaudiere.Logger;
 import com.swampbits.chaudiere.ServiceInfo;
 
 
@@ -50,6 +51,7 @@ public class Messaging {
     * @throws Exception
     */
    public static void initialize(String configFilePath) throws Exception {
+      Logger.debug("Messaging.initialize: reading configuration file");
       IniReader reader = new IniReader(configFilePath);
       
       if (reader.hasSection(KEY_SERVICES)) {
@@ -81,7 +83,9 @@ public class Messaging {
          
             if (servicesRegistered > 0) {
                Messaging.setMessaging(messaging);
+               Logger.info("Messaging initialized");
             } else {
+               Logger.debug("Messaging.initialize: no services registered");
                throw new Exception("no services registered");
             }
          }

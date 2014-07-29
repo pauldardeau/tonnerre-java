@@ -9,6 +9,8 @@ package com.swampbits.tonnerre.tests;
 import java.util.ArrayList;
 
 import com.swampbits.chaudiere.KeyValuePairs;
+import com.swampbits.chaudiere.Logger;
+import com.swampbits.chaudiere.StdLogger;
 import com.swampbits.tonnerre.Message;
 import com.swampbits.tonnerre.Messaging;
 
@@ -30,9 +32,8 @@ public class TestClient {
 
 
    public static void main(String[] args) {
-      //StdLogger logger = new StdLogger(Logger::LogLevel::Info));
-      //logger->setLogInstanceLifecycles(true);
-      //Logger::setLogger(logger);
+      StdLogger logger = new StdLogger(Logger.LogLevel.Debug);
+      Logger.setLogger(logger);
    
       String SERVICE_SERVER_INFO = "server_info";
       String SERVICE_ECHO        = "echo_service";

@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.StringTokenizer;
 
 import com.swampbits.chaudiere.KeyValuePairs;
+import com.swampbits.chaudiere.Logger;
 import com.swampbits.chaudiere.ServiceInfo;
 import com.swampbits.chaudiere.Socket;
 import com.swampbits.chaudiere.StrUtils;
@@ -26,9 +27,9 @@ public class Message {
     
    private static final String EMPTY_STRING           = "";
 
-   private static final int MAX_SEGMENT_LENGTH             = 32767;
+   private static final int MAX_SEGMENT_LENGTH        = 32767;
 
-   private static final int NUM_CHARS_HEADER_LENGTH        = 10;
+   private static final int NUM_CHARS_HEADER_LENGTH   = 10;
 
    private static final String DELIMITER_KEY_VALUE    = "=";
    private static final String DELIMITER_PAIR         = ";";
@@ -104,7 +105,7 @@ public class Message {
     */
    public boolean send(String serviceName) {
       if (m_messageType == MessageType.Unknown) {
-         //Logger.error("unable to send message, no message type set");
+         Logger.error("unable to send message, no message type set");
          return false;
       }
 
@@ -117,11 +118,11 @@ public class Message {
             return true;
          } else {
             // unable to write to socket
-            //Logger.error("unable to write to socket");
+            Logger.error("unable to write to socket");
          }
       } else {
          // unable to connect to service
-         //Logger.error("unable to connect to service");
+         Logger.error("unable to connect to service");
       }
    
       return false;       
@@ -135,25 +136,27 @@ public class Message {
     */
    public boolean send(String serviceName, Message responseMessage) {
       if (m_messageType == MessageType.Unknown) {
-         //Logger.error("unable to send message, no message type set");
+         Logger.error("unable to send message, no message type set");
          return false;
       }
    
       Socket socket = socketForService(serviceName);
    
       if (socket != null) {
-         //String payload = toString();
-         //System.out.println("payload: '" + payload + "'");
+         if (Logger.isLogging(Logger.LogLevel.Verbose)) {
+            String payload = toString();
+            Logger.verbose("payload: '" + payload + "'");
+         }
       
          if (socket.write(toString())) {
             return responseMessage.reconstitute(socket);
          } else {
             // unable to write to socket
-            //Logger.error("unable to write to socket");
+            Logger.error("unable to write to socket");
          }
       } else {
          // unable to connect to service
-         //Logger.error("unable to connect to service");
+         Logger.error("unable to connect to service");
       }
 
       return false;       
@@ -178,7 +181,7 @@ public class Message {
             String headerLengthPrefix = new String(headerLengthPrefixBuffer);
             headerLengthPrefix = StrUtils.stripTrailing(headerLengthPrefix, ' ');
             
-            //System.out.println("headerLengthPrefix read: '" + headerLengthPrefix + "'");
+            Logger.verbose("headerLengthPrefix read: '" + headerLengthPrefix + "'");
             
             final int headerLength = Integer.parseInt(headerLengthPrefix);
          
@@ -189,7 +192,7 @@ public class Message {
                if (socket.readSocket(headerBuffer, headerLength)) {
                   headerAsString = new String(headerBuffer);
                } else {
-                  //Logger.error("reading socket for header failed");
+                  Logger.error("reading socket for header failed");
                   return false;
                }
             
@@ -206,7 +209,7 @@ public class Message {
                      }
                   
                      if (m_messageType == MessageType.Unknown) {
-                        //Logger.error("unable to identify message type from header");
+                        Logger.error("unable to identify message type from header");
                         return false;
                      }
                   
@@ -222,7 +225,7 @@ public class Message {
                               if (socket.readSocket(payloadBuffer, payloadLength)) {
                                  payloadAsString = new String(payloadBuffer);
                               } else {
-                                 //Logger.error("reading socket for payload failed");
+                                 Logger.error("reading socket for payload failed");
                                  return false;
                               }
                            
@@ -249,23 +252,23 @@ public class Message {
                      return true;
                   } else {
                      // unable to parse header
-                     //Logger.error("unable to parse header");
+                     Logger.error("unable to parse header");
                   }
                } else {
                   // unable to read header
-                  //Logger.error("unable to read header");
+                  Logger.error("unable to read header");
                }
             } else {
                // header length is empty
-               //Logger.error("header length is empty");
+               Logger.error("header length is empty");
             }
          } else {
             // socket read failed
-            //Logger.error("socket read failed");
+            Logger.error("socket read failed");
          }
       } else {
          // no socket given
-         //Logger.error("no socket given to reconstitute");
+         Logger.error("no socket given to reconstitute");
       }
 
       return false;       
@@ -470,7 +473,7 @@ public class Message {
    
       if (socket != null) {
          char[] lengthAsChars = new char[NUM_CHARS_HEADER_LENGTH+1];
-         if (socket.read(lengthAsChars, NUM_CHARS_HEADER_LENGTH)) {
+         if (socket.readSocket(lengthAsChars, NUM_CHARS_HEADER_LENGTH)) {
             String encodedLength = new String(lengthAsChars);
             return Integer.parseInt(encodedLength);
          }
@@ -502,13 +505,13 @@ public class Message {
                
                return socket;
             } else {
-               //Logger.error("service is not registered");
+               Logger.error("service is not registered");
             }
          } else {
-            //Logger.error("Messaging.getMessaging returned null, but isInitialized returns true");
+            Logger.error("Messaging.getMessaging returned null, but isInitialized returns true");
          }
       } else {
-         //Logger.error("messaging not initialized");
+         Logger.error("messaging not initialized");
       }
    
       return null;       
