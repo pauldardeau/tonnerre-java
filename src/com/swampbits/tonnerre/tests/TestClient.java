@@ -6,7 +6,7 @@
 
 package com.swampbits.tonnerre.tests;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import com.swampbits.chaudiere.KeyValuePairs;
 import com.swampbits.chaudiere.Logger;
@@ -22,8 +22,7 @@ import com.swampbits.tonnerre.Messaging;
 public class TestClient {
    
    public static void PrintKeyValues(KeyValuePairs kvp) {
-      ArrayList<String> keys = new ArrayList<>();
-      kvp.getKeys(keys);
+      List<String> keys = kvp.getKeys();
       for (String key : keys) {
          String value = kvp.getValue(key);
          System.out.println("key='" + key + "', value='" + value + "'");

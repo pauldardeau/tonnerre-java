@@ -6,8 +6,8 @@
 
 package com.swampbits.tonnerre;
 
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import com.swampbits.chaudiere.IniReader;
 import com.swampbits.chaudiere.KeyValuePairs;
@@ -26,7 +26,7 @@ public class Messaging {
    
    
    private static Messaging messagingInstance = null;
-   private HashMap<String, ServiceInfo> m_mapServices;    
+   private final HashMap<String, ServiceInfo> mapServices;    
 
     
    /**
@@ -57,8 +57,7 @@ public class Messaging {
       if (reader.hasSection(KEY_SERVICES)) {
          KeyValuePairs kvpServices = new KeyValuePairs();
          if (reader.readSection(KEY_SERVICES, kvpServices)) {
-            ArrayList<String> keys = new ArrayList<>();
-            kvpServices.getKeys(keys);
+            List<String> keys = kvpServices.getKeys();
             int servicesRegistered = 0;
          
             Messaging messaging = new Messaging();
@@ -96,7 +95,7 @@ public class Messaging {
     * Default constructor
     */
    public Messaging() {
-      m_mapServices = new HashMap<>();
+      mapServices = new HashMap<>();
    }
    
    /**
@@ -114,7 +113,7 @@ public class Messaging {
     * @see ServiceInfo()
     */
    public void registerService(String serviceName, ServiceInfo serviceInfo) {
-      m_mapServices.put(serviceName, serviceInfo);
+      mapServices.put(serviceName, serviceInfo);
    }
    
    /**
@@ -123,7 +122,7 @@ public class Messaging {
     * @return boolean indicating if the service has been registered
     */
    public boolean isServiceRegistered(String serviceName) {
-      return m_mapServices.containsKey(serviceName);
+      return mapServices.containsKey(serviceName);
    }
    
    /**
@@ -133,7 +132,7 @@ public class Messaging {
     * @see ServiceInfo()
     */
    public ServiceInfo getInfoForService(String serviceName) {
-      return m_mapServices.get(serviceName);
+      return mapServices.get(serviceName);
    }
 
 }

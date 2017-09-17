@@ -6,7 +6,7 @@
 
 package com.swampbits.tonnerre;
 
-import java.util.ArrayList;
+import java.util.List;
 import java.util.StringTokenizer;
 
 import com.swampbits.chaudiere.KeyValuePairs;
@@ -397,8 +397,7 @@ public class Message {
       StringBuilder kvpAsString = new StringBuilder();
    
       if ((kvp != null) && !kvp.empty()) {
-         ArrayList<String> keys = new ArrayList<>();
-         kvp.getKeys(keys);
+         List<String> keys = kvp.getKeys();
          int i = 0;
       
          for (String key : keys) {
@@ -516,5 +515,33 @@ public class Message {
    
       return null;       
    }
+
+   /**
+    * Sets the specified key/value pair in the headers
+    * @param key the new header key
+    * @param value the new header value
+    */
+   public void setHeader(String key, String value) {
+      m_kvpHeaders.addPair(key, value);
+      
+   }
    
+   /**
+    * Determines if the specified key exists in the headers
+    * @param key whose existence is being tested
+    * @return boolean indicating whether the key exists in the headers
+    */
+   public boolean hasHeader(String key) {
+      return m_kvpHeaders.hasKey(key);
+   }
+
+   /**
+    * Retrieves the header value associated with the specified key
+    * @param key header key whose value is being retrieved
+    * @return reference to header value
+    * @throw InvalidKeyException
+    */
+   public String getHeader(String key) {
+      return m_kvpHeaders.getValue(key);
+   }
 }
